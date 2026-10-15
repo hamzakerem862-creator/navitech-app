@@ -1,0 +1,27 @@
+name: Build for WinCE
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-mingw-w64-i686
+
+      - name: Compile Code
+        run: |
+          # Not: Gerçek Win32/WinCE API çağrıları için ceGCC veya MSVC gerekir, 
+          # ancak test amaçlı standart x86 Win32 derlemesi de bazı WinCE tabanlarında çalışabilir.
+          i686-w64-mingw32-g++ main.cpp -o NavitechApp.exe -static -luser32 -lgdi32
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NavitechApp
+          path: NavitechApp.exe
